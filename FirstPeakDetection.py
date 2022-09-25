@@ -1,6 +1,7 @@
 import numpy as np
 
 
+
 class FirstPeakDetection:
 
     def __init__(self, signal, lag, standarddeviation):
@@ -23,21 +24,23 @@ class FirstPeakDetection:
 
             mean_total = np.mean(self.signal.iloc[i, 0:self.col])
             for col in range(self.col):
-                self.mean[i][col] = np.mean(self.signal.iloc[i, (col - self.lag):(col + self.lag)])
-                print('############################################' + str(self.mean[i][col]))
+                self.mean[i][col] = np.mean(self.signal.iloc[i, range(self.col)])
+                print('############################################' + str(mean_total))        #str(self.mean[i][col]))
 
-                if (self.signal.iloc[i, col] > self.mean[i][col]) & (self.signal.iloc[i, col] != 0):
-                    signal_mean_difference = self.signal.iloc[i, col] - self.mean[i][col]
-                    signal_mean_difference_percentage = 100 * (
-                            float(signal_mean_difference) / float(self.signal.iloc[i, col]))
+                if (self.signal.iloc[i, col] > mean_total) & (self.signal.iloc[i, col] != 0):
+                    signal_mean_difference = self.signal.iloc[i, col] - mean_total
+                    # signal_mean_difference_percentage = 100 * (
+                    #         float(signal_mean_difference) / float(self.signal.iloc[i, col]))
 
                     print('####################################### signal value')
                     print(self.signal.iloc[i, col])
-                    print('###################################### mean at this point')
-                    print(self.mean[i][col])
+                    print('###################################### signal_mean_difference_percentage at this point')
+                    print(signal_mean_difference)
 
-                    if signal_mean_difference_percentage > self.lag:
+                    if signal_mean_difference > 5:
                         self.greater_than_mean[i][col] = self.signal.iloc[i, col]
+                        print('###################################### greater_than_mean[i][col] at this point')
+                        print(str(self.greater_than_mean[i][col]) + "  " + str(i) + "  " + str(col))
 
                 else:
                     continue
@@ -49,9 +52,11 @@ class FirstPeakDetection:
             number_of_point_over_mean_percent = 100 * (number_of_point_over_mean / self.col)
 
             if number_of_point_over_mean_percent > 20:
+                #print('###################################### continuous_peak at this point')
                 first_peak = self.continuous_peak(mean_total)
                 return first_peak
             else:
+                #print('###################################### discrete_peak at this point')
                 first_peak = self.discrete_peak(mean_total)
                 return first_peak
 
@@ -60,29 +65,50 @@ class FirstPeakDetection:
     def continuous_peak(self, mean):
         peaks_value = np.zeros(self.col)
         first_peak = np.zeros(2)
+        peak = 0
         for row in range(self.row):
             p = 0
-            for col in range(1,self.col-1):
+            for col in range(1, self.col-1):
+                #print(str(self.greater_than_mean[row][col]) + " $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ " + str(self.greater_than_mean[row][col-1]))
+                #print(str(self.greater_than_mean[row][col]) + " $$$$$$$$$$$$$$################ " + str(self.greater_than_mean[row][col + 1]))
+                #print(str(self.greater_than_mean[row][col]) + " $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ " + str(mean))
                 if (self.greater_than_mean[row][col] > mean) & \
                         (self.greater_than_mean[row][col] > self.greater_than_mean[row][col-1]) & \
                         (self.greater_than_mean[row][col] > self.greater_than_mean[row][col+1]):
-
+                    #print('####################### peaks at this point ######################## ')
                     self.peaks[row][col] = self.signal.iloc[row, col]
                     peaks_value[p] = self.signal.iloc[row, col]
+                    #print("#######################################################################")
+                    #print(str(peaks_value[p]) + " " + str(row) + " " + str(col))
                     p += 1
                 else:
                     continue
-            i=1
-            while 1:
-                if (peaks_value[i]> peaks_value[i+1]) & (peaks_value[i]> peaks_value[i-11]) & (i < self.col):
-                    for col in range(self.col):
-                        if self.signal.iloc[row, col] == peaks_value[i]:
-                            first_peak[0] = self.signal.iloc[row, col]
-                            first_peak[1] = col
 
+            # for r in range(len(peaks_value)):
+            #     print(str(r) + " " +str(peaks_value[r]))
+
+            i=1
+            while peaks_value[i] != 0.00:
+                peak = peaks_value[i]
+                j = i+1
+                while j > 0:
+                    if peak > peaks_value[j]:
+                        j -= 1
+                    else:
+                        break
+                i += 1
+
+            for col in range(self.col):
+                if self.signal.iloc[row, col] == peak:
+                    first_peak[0] = self.signal.iloc[row, col]
+                    first_peak[1] = col
+                    print("#######################################################################")
+                    print(str(first_peak[0]) + "  " + str(first_peak[1]))
+                    print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
                     return first_peak
-                else:
-                    i += 1
+
+                # else:
+                #     i += 1
 
     def discrete_peak(self, mean):
         first_peak = np.zeros(2)
@@ -96,8 +122,6 @@ class FirstPeakDetection:
                     continue
 
         return first_peak
-
-
 
 
 

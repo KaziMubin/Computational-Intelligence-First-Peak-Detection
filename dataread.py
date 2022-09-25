@@ -4,7 +4,7 @@ from FirstPeakDetection import FirstPeakDetection
 
 
 def main():
-    data = pd.read_excel("T File 5.xlsx", header=None, index_col=None, usecols="G:DZZ")
+    data = pd.read_excel("T File 5.xlsx", header=None, index_col=None)
 
     row, col = data.shape
     dev_x = range(0, col)
