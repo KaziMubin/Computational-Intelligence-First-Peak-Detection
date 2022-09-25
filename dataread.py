@@ -10,13 +10,13 @@ def main():
     dev_x = range(0, col)
 
     standarddeviation = 5
-    lag = 10
+    lag = 5
     peakdetection = FirstPeakDetection(data, lag, standarddeviation)
     peak = peakdetection.peakCalculation()
     for i in range(0, 2):
         dev_y = data.iloc[i, :]
-        plt.plot(dev_x, dev_y, marker='x', color='green', linewidth='3')
-        plt.plot(peak[1], peak[0], marker='x', color='red', linewidth='3')
+        plt.scatter(dev_x, dev_y, marker='x', color='green')
+        plt.scatter(peak[1], peak[0], marker='x', color='red')
         plt.show()
 
 
