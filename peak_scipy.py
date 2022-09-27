@@ -22,8 +22,8 @@ def upload_file():
 
     data = pd.read_excel(file, header=None, index_col=None)
     row, col = data.shape
-    dev_x = range(0, col)
-    dev_y = data.iloc[0, :]
+    dev_x = range(col)
+    dev_y = data.iloc[35, :]
     indexes, _ = find_peaks(dev_y, distance=1000)
 
     first_peak = dev_y[indexes[0]]
