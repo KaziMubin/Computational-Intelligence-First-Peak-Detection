@@ -4,7 +4,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split, GridSearchCV
 
 
-def main():
+def ML_solution():
 
     train = pd.read_excel("labeled.xlsx")
     test = pd.read_excel("Wand_000_changed.xlsx")
@@ -33,5 +33,5 @@ def main():
     print(pd.DataFrame(cross_val.cv_results_))
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import tkinter as tk
 import pandas as pd
 from tkinter import filedialog
+import ML_approch
 
 
 def main():
@@ -14,10 +15,15 @@ def main():
     l1 = tk.Label(my_w, text='Upload File & read', width=30, font=my_font1)
     l1.grid(row=1, column=1)
     b1 = tk.Button(my_w, text='Upload File', width=20, command=lambda: upload_file())
+    b2 = tk.Button(my_w, text='ML Solution', width=20, command=lambda: ML_sol())
     b1.grid(row=2, column=1)
+    b2.grid(row=3, column=1)
 
     my_w.mainloop()
 
+
+def ML_sol():
+    ML_approch.ML_solution()
 
 def upload_file():
     file = filedialog.askopenfilename()
