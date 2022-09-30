@@ -17,21 +17,11 @@ def main():
     test.drop(['Class'], axis=1, inplace=True)
     X_test= test
 
-    # y = train.Class
-    # train.drop(['Class'], axis=1, inplace=True)
-    # X = train
-
-    # Now we split the dataset in train and test part
-    # here the train set is 75% and test set is 25%
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=2)
-
     DT = SVR()
-    #print(DT.get_params())
     cross_val = GridSearchCV(estimator=DT,
                              param_grid={'max_iter':[-1, 100, 500, 750, 1000]},
                              cv=4)
     cross_val.fit(X_train, y_train)
-    #DT.fit(X_train, y_train)
     pred = cross_val.predict(X_test)
 
     print("The first five prediction {}".format(pred[525:]))
