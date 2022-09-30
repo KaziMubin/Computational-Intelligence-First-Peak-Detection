@@ -55,7 +55,8 @@ def upload_file():
                 first_peak = filtered3[indexes[ind]]
                 location = indexes[ind]
             elif (ind > 0) & (filtered3[indexes[ind]] > mean_indexes) & \
-                    (filtered3[indexes[ind]] > filtered3[indexes[ind+1]]) & (filtered3[indexes[ind]] > filtered3[indexes[ind-1]]):
+                    (filtered3[indexes[ind]] > filtered3[indexes[ind+1]]) &\
+                    (filtered3[indexes[ind]] > filtered3[indexes[ind-1]]):
                 first_peak = filtered3[indexes[ind]]
                 location = indexes[ind]
         print(first_peak)
