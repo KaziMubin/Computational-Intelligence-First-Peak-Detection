@@ -19,12 +19,11 @@ class FirstPeakDetection:
         # col = 0
         number_of_point_over_mean = 0
 
-
         for i in range(self.row):
 
-            mean_total = np.mean(self.signal.iloc[i, 0:self.col])
+            mean_total = np.average(self.signal.iloc[i, :])
             for col in range(self.col):
-                self.mean[i][col] = np.mean(self.signal.iloc[i, range(self.col)])
+                self.mean[i][col] = np.average(self.signal.iloc[i, range(self.col)])
                 print('############################################' + str(mean_total))        #str(self.mean[i][col]))
 
                 if (self.signal.iloc[i, col] > mean_total) & (self.signal.iloc[i, col] != 0):
@@ -37,7 +36,7 @@ class FirstPeakDetection:
                     print('###################################### signal_mean_difference_percentage at this point')
                     print(signal_mean_difference)
 
-                    if signal_mean_difference > 5:
+                    if signal_mean_difference > .05:
                         self.greater_than_mean[i][col] = self.signal.iloc[i, col]
                         print('###################################### greater_than_mean[i][col] at this point')
                         print(str(self.greater_than_mean[i][col]) + "  " + str(i) + "  " + str(col))

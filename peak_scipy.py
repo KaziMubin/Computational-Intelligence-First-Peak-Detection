@@ -1,6 +1,6 @@
-from scipy.signal import find_peaks
-from matplotlib import pyplot as plt
 import numpy as np
+from scipy.signal import find_peaks, butter, filtfilt
+from matplotlib import pyplot as plt
 import tkinter as tk
 import pandas as pd
 from tkinter import filedialog
@@ -15,6 +15,7 @@ def main():
     l1.grid(row=1, column=1)
     b1 = tk.Button(my_w, text='Upload File', width=20, command=lambda: upload_file())
     b1.grid(row=2, column=1)
+
     my_w.mainloop()
 
 
@@ -30,26 +31,33 @@ def upload_file():
         location = np.zeros(1)
         peaks = []
         dev_y = data.iloc[i, :]
-        indexes, _ = find_peaks(dev_y, distance=1000)
+
+        b, a = butter(3, 0.1, 'highpass')
+        filtered2 = filtfilt(b, a, dev_y)
+        filtered3 = filtfilt(b, a, filtered2)
+
+        indexes, _ = find_peaks(filtered3, distance=1000)
         for vals in range(len(indexes)):
-            peaks.append(dev_y[indexes[vals]])
+            peaks.append(filtered3[indexes[vals]])
             print(peaks)
 
         mean_indexes = np.average(peaks)
         print(mean_indexes)
 
-        for i in range(0, len(indexes) - 1):
-            if (i == 0) & (dev_y[indexes[i]] > dev_y[indexes[i + 1]]):
-                first_peak = dev_y[indexes[i]]
-                location = indexes[i]
-            elif (i > 0) & (dev_y[indexes[i]] > mean_indexes) & \
-                    (dev_y[indexes[i]] > dev_y[indexes[i + 1]]) & (dev_y[indexes[i]] > dev_y[indexes[i - 1]]):
-                first_peak = dev_y[indexes[i]]
-                location = indexes[i]
+        for ind in range(0, len(indexes)-1):
+            if (ind == 0) & (filtered3[indexes[ind]] > filtered3[indexes[ind+1]]):
+                first_peak = filtered3[indexes[ind]]
+                location = indexes[ind]
+            elif (ind > 0) & (filtered3[indexes[ind]] > mean_indexes) & \
+                    (filtered3[indexes[ind]] > filtered3[indexes[ind+1]]) & (filtered3[indexes[ind]] > filtered3[indexes[ind-1]]):
+                first_peak = filtered3[indexes[ind]]
+                location = indexes[ind]
         print(first_peak)
         print(location)
-
-        plt.plot(dev_x, dev_y, color='green')
+        #first_peak = dev_y[indexes[0]]
+        #location = indexes[0]
+        plt.figure()
+        plt.plot(filtered3, color='green')
         plt.plot(location, first_peak, marker='x', color='red')
         plt.show()
 
